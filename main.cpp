@@ -1,7 +1,6 @@
 #include <iostream>
-#include <fstream>
 #include <string>
-#include <array>
+#include <vector>
 
 // include modules 
 #include "modules/headers/example.h"
@@ -10,7 +9,7 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-  array<string, 1> modules = {
+  vector<string> modules = {
     "example: " + example(),
   };
   for(int i = 0;i<modules.size();i++){
