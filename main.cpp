@@ -24,18 +24,18 @@ int main(int argc, char* argv[])
   float total = cpu_usage();
   Elements lines = {
     hbox({
-      text("cpu:  "),
-      gauge(total),
-      text(to_string((int)(total * 100 + 0.5f)) + "%"),
-    }) | border 
+      text("cpu:  ") | border ,
+      gauge(total) | flex,
+      text(to_string((int)(total * 100 + 0.5f)) + "%") | border, 
+    }) | border | flex
   };
   for(int c = 0;;c++){
     float usage = cpu_per_core(c);
     if(usage < 0) break;
     lines.push_back(hbox({
-      text("cpu" + to_string(c) + ": "),
-      gauge(usage),
-      text(to_string((int)(usage * 100 + 0.5f)) + "%"),
+      text("cpu" + to_string(c) + ": ") | border,
+      gauge(usage) | flex,
+      text(to_string((int)(usage * 100 + 0.5f)) + "%") | border,
     }));
   }
   return vbox(lines) | border;

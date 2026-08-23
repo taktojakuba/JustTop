@@ -8,7 +8,7 @@
 
 using namespace std;
 
-const int SAMPLE_MS = 250;
+const int SAMPLE_MS = 1000;
 
 static vector<vector<long>> read_cpu_lines()
 {
