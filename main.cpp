@@ -1,6 +1,11 @@
+#include <chrono>
+#include <ftxui/component/event.hpp>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <ftxui/component/component.hpp>
+#include <ftxui/component/screen_interactive.hpp>
+#include <thread>
 
 // ftxui
 #include <ftxui/dom/elements.hpp>
@@ -8,27 +13,41 @@
 
 // include modules 
 #include "modules/headers/example.h"
+#include "modules/headers/cpu.h"
 
 using namespace std;
 using namespace ftxui;
 
 int main(int argc, char* argv[])
 {
-  vector<string> modules = {
-    "example: " + example(),
+  auto renderer = Renderer([&]{
+  float total = cpu_usage();
+  Elements lines = {
+    hbox({
+      text("cpu:  "),
+      gauge(total),
+      text(to_string((int)(total * 100 + 0.5f)) + "%"),
+    }) | border 
   };
-
-  // build lines out of module strings
-  Elements lines;
-  for(size_t i = 0;i<modules.size();i++){
-    lines.push_back(text(modules[i]));
+  for(int c = 0;;c++){
+    float usage = cpu_per_core(c);
+    if(usage < 0) break;
+    lines.push_back(hbox({
+      text("cpu" + to_string(c) + ": "),
+      gauge(usage),
+      text(to_string((int)(usage * 100 + 0.5f)) + "%"),
+    }));
   }
-
-  // static one-shot render
-  auto document = vbox(lines) | border;
-  auto screen = Screen::Create(Dimension::Full(), Dimension::Fit(document));
-  Render(screen, document);
-  cout << screen.ToString() << endl;
+  return vbox(lines) | border;
+  });
+  auto screen = ScreenInteractive::TerminalOutput();
+  thread refresher([&]{
+      while(true){
+      this_thread::sleep_for(chrono::milliseconds(1000));
+      screen.PostEvent(Event::Custom);
+      }
+      });
+  screen.Loop(renderer);
 
   return 0;
 }

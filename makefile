@@ -1,7 +1,7 @@
 all: jtop
 
 jtop: main.cpp modules/*.cpp
-	g++ -std=c++17 -O2 -march=native -flto main.cpp modules/*.cpp -o jtop -lftxui-component -lftxui-dom -lftxui-screen
+	g++ -std=c++17 -O2 -march=native -flto main.cpp modules/*.cpp -o jtop -lftxui-component -lftxui-dom -lftxui-screen -pthread
 install: jtop
 	cp jtop /usr/local/bin/jtop
 
